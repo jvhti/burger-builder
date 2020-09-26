@@ -21,6 +21,11 @@
   }
 }
 
+.DesktopOnly {
+}
+
+/* Fix warning (unresolved-var, false warning) in WebStorm, this class is defined inside a media query */
+
 @media (max-width: 499px) {
   .DesktopOnly {
     display: none;
