@@ -17,7 +17,12 @@ class BurgerBuilder extends Component {
       cheese: 0,
       meat: 0
     },
-    totalPrice: 4
+    totalPrice: 4,
+    purchasable: false
+  }
+
+  static isPurchasable(ingredients) {
+    return Object.keys(ingredients).map(key => ingredients[key]).reduce((sum, cur) => sum + cur, 0) > 0;
   }
 
   addIngredientHandler = (type) => {
@@ -26,7 +31,11 @@ class BurgerBuilder extends Component {
 
       ++ingredients[type];
 
-      return {ingredients, totalPrice: prevState.totalPrice + INGREDIENT_PRICES[type]};
+      return {
+        ingredients,
+        totalPrice: prevState.totalPrice + INGREDIENT_PRICES[type],
+        purchasable: BurgerBuilder.isPurchasable(ingredients)
+      };
     });
   }
 
@@ -38,7 +47,11 @@ class BurgerBuilder extends Component {
 
       --ingredients[type];
 
-      return {ingredients, totalPrice: prevState.totalPrice - INGREDIENT_PRICES[type]};
+      return {
+        ingredients,
+        totalPrice: prevState.totalPrice - INGREDIENT_PRICES[type],
+        purchasable: BurgerBuilder.isPurchasable(ingredients)
+      };
     });
   }
 
@@ -54,7 +67,7 @@ class BurgerBuilder extends Component {
         <React.Fragment>
           <Burger ingredients={this.state.ingredients}/>
           <BuildControls ingredientAdded={this.addIngredientHandler} ingredientRemoved={this.removeIngredientHandler}
-                         disabled={disabledInfo} price={this.state.totalPrice}/>
+                         disabled={disabledInfo} price={this.state.totalPrice} purchasable={this.state.purchasable}/>
         </React.Fragment>
     );
   }
