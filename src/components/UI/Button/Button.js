@@ -4,11 +4,12 @@ import classes from './Button.module.scss';
 
 const button = (props) =>
     <button className={[classes.Button, classes[props.btnType]].join(' ')}
-            onClick={props.clicked}>{props.children}</button>;
+            onClick={props.clicked} disabled={props.disabled}>{props.children}</button>;
 
 button.propTypes = {
   btnType: PropTypes.string.isRequired,
-  clicked: PropTypes.func
+  clicked: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 export default button;
