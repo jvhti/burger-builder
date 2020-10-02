@@ -14,35 +14,40 @@ class ContactData extends Component {
         elementConfig: {type: 'text', placeholder: 'Your Name'},
         value: '',
         validation: {required: true, minLength: 5},
-        valid: false
+        valid: false,
+        touched: false
       },
       street: {
         elementType: 'input',
         elementConfig: {type: 'text', placeholder: 'Street'},
         value: '',
         validation: {required: true},
-        valid: false
+        valid: false,
+        touched: false
       },
       country: {
         elementType: 'input',
         elementConfig: {type: 'text', placeholder: 'Country'},
         value: '',
         validation: {required: true},
-        valid: false
+        valid: false,
+        touched: false
       },
       zipCode: {
         elementType: 'input',
         elementConfig: {type: 'text', placeholder: 'ZIP Code'},
         value: '',
         validation: {required: true, matchesRegEx: new RegExp(/^[\d]{5}-[\d]{3}$/)},
-        valid: false
+        valid: false,
+        touched: false
       },
       email: {
         elementType: 'input',
         elementConfig: {type: 'email', placeholder: 'Your E-Mail'},
         value: '',
         validation: {required: true},
-        valid: false
+        valid: false,
+        touched: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -52,7 +57,8 @@ class ContactData extends Component {
             {value: 'cheapest', displayValue: 'Cheapest'}
           ]
         },
-        value: 'cheapest'
+        value: 'cheapest',
+        touched: false
       },
     },
     loading: false
@@ -110,6 +116,7 @@ class ContactData extends Component {
     const updatedFormElement = {...this.state.orderForm[inputIdentifier]};
 
     updatedFormElement.value = ev.target.value;
+    updatedFormElement.touched = true;
     updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedOrderForm[inputIdentifier] = updatedFormElement;
 
@@ -133,7 +140,7 @@ class ContactData extends Component {
               <Input key={formElement.id} elementType={formElement.config.elementType}
                      elementConfig={formElement.config.elementConfig} value={formElement.config.value}
                      changed={(ev) => this.inputChangedHandler(ev, formElement.id)} invalid={!formElement.config.valid}
-                     shouldValidate={!!formElement.config.validation}/>
+                     shouldValidate={!!formElement.config.validation} touched={formElement.config.touched}/>
           ))}
           <Button btnType="Success">ORDER</Button>
         </form>
