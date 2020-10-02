@@ -52,6 +52,18 @@ class ContactData extends Component {
     ev.preventDefault();
   }
 
+  inputChangedHandler = (ev, inputIdentifier) => {
+    const updatedOrderForm = {...this.state.orderForm};
+
+    const updatedFormElement = {...this.state.orderForm[inputIdentifier]};
+
+    updatedFormElement.value = ev.target.value;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+    this.setState({orderForm: updatedOrderForm});
+
+  }
+
   render() {
     const formElementsArray = [];
 
@@ -66,7 +78,8 @@ class ContactData extends Component {
         <form>
           {formElementsArray.map(formElement => (
               <Input key={formElement.id} elementType={formElement.config.elementType}
-                     elementConfig={formElement.config.elementConfig} value={formElement.config.value}/>
+                     elementConfig={formElement.config.elementConfig} value={formElement.config.value}
+                     changed={(ev) => this.inputChangedHandler(ev, formElement.id)}/>
           ))}
           <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
         </form>
