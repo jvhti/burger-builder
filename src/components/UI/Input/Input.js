@@ -3,17 +3,24 @@ import classes from './Input.module.scss';
 
 const input = (props) => {
   let inputElement;
-  const filteredProps = (({inputType, ...filtered}) => filtered)(props);
 
-  switch (props.inputType) {
+  switch (props.elementType) {
     case ('input'):
-      inputElement = <input {...filteredProps} className={classes.InputElement}/>;
+      inputElement = <input {...props.elementConfig} className={classes.InputElement} value={props.value}/>;
       break;
     case ('textarea'):
-      inputElement = <textarea {...filteredProps} className={classes.InputElement}/>;
+      inputElement = <textarea {...props.elementConfig} className={classes.InputElement} value={props.value}/>;
+      break;
+    case ('select'):
+      inputElement = (
+          <select className={classes.InputElement} value={props.value}>
+            {props.elementConfig.options.map(option => <option key={option.value}
+                                                               value={option.value}>{option.displayValue}</option>)}
+          </select>
+      );
       break;
     default:
-      inputElement = <input {...filteredProps} className={classes.InputElement}/>
+      inputElement = <input {...props.elementConfig} className={classes.InputElement} value={props.value}/>
       break;
   }
   return (

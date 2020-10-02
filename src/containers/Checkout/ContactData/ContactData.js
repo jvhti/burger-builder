@@ -8,11 +8,26 @@ import Input from "../../../components/UI/Input/Input";
 
 class ContactData extends Component {
   state = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      postalCode: ''
+    orderForm: {
+      name: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Your Name'}, value: ''},
+      street: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Street'}, value: ''},
+      country: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Country'}, value: ''},
+      zipCode: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'ZIP Code'}, value: ''},
+      email: {
+        elementType: 'input',
+        elementConfig: {type: 'email', placeholder: 'Your E-Mail'},
+        value: ''
+      },
+      deliveryMethod: {
+        elementType: 'select',
+        elementConfig: {
+          options: [
+            {value: 'fastest', displayValue: 'Fastest'},
+            {value: 'cheapest', displayValue: 'Cheapest'}
+          ]
+        },
+        value: 'cheapest'
+      },
     },
     loading: false
   }
@@ -23,16 +38,6 @@ class ContactData extends Component {
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: 'João Víctor',
-        address: {
-          street: 'Rua 1',
-          country: 'Brazil',
-          zipCode: '1234567'
-        },
-        email: 'jvoshti@gmail.com'
-      },
-      deliveryMethod: 'fastest'
     };
 
     axios.post('/orders.json', order)
@@ -48,17 +53,30 @@ class ContactData extends Component {
   }
 
   render() {
+    const formElementsArray = [];
+
+    for (const key in this.state.orderForm) {
+      formElementsArray.push({
+        id: key,
+        config: this.state.orderForm[key]
+      });
+    }
+
+    let form = (
+        <form>
+          {formElementsArray.map(formElement => (
+              <Input key={formElement.id} elementType={formElement.config.elementType}
+                     elementConfig={formElement.config.elementConfig} value={formElement.config.value}/>
+          ))}
+          <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+        </form>
+    );
+
     return (
         <div className={classes.ContactData}>
           <h4>Enter your Contact Data</h4>
           <Loader loading={this.state.loading}>
-            <form>
-              <Input inputType="input" type="text" name="name" placeholder="Your Name"/>
-              <Input inputType="input" type="email" name="email" placeholder="Your Email"/>
-              <Input inputType="input" type="text" name="street" placeholder="Street"/>
-              <Input inputType="input" type="text" name="postal" placeholder="Postal Code"/>
-              <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
-            </form>
+            {form}
           </Loader>
         </div>
     );
