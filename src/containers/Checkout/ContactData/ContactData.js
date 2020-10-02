@@ -9,14 +9,40 @@ import Input from "../../../components/UI/Input/Input";
 class ContactData extends Component {
   state = {
     orderForm: {
-      name: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Your Name'}, value: ''},
-      street: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Street'}, value: ''},
-      country: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'Country'}, value: ''},
-      zipCode: {elementType: 'input', elementConfig: {type: 'text', placeholder: 'ZIP Code'}, value: ''},
+      name: {
+        elementType: 'input',
+        elementConfig: {type: 'text', placeholder: 'Your Name'},
+        value: '',
+        validation: {required: true, minLength: 5},
+        valid: false
+      },
+      street: {
+        elementType: 'input',
+        elementConfig: {type: 'text', placeholder: 'Street'},
+        value: '',
+        validation: {required: true},
+        valid: false
+      },
+      country: {
+        elementType: 'input',
+        elementConfig: {type: 'text', placeholder: 'Country'},
+        value: '',
+        validation: {required: true},
+        valid: false
+      },
+      zipCode: {
+        elementType: 'input',
+        elementConfig: {type: 'text', placeholder: 'ZIP Code'},
+        value: '',
+        validation: {required: true, matchesRegEx: new RegExp(/^[\d]{5}-[\d]{3}$/)},
+        valid: false
+      },
       email: {
         elementType: 'input',
         elementConfig: {type: 'email', placeholder: 'Your E-Mail'},
-        value: ''
+        value: '',
+        validation: {required: true},
+        valid: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -30,6 +56,26 @@ class ContactData extends Component {
       },
     },
     loading: false
+  }
+
+  checkValidity(value, rules) {
+    let isValid = true;
+
+    if (!rules) return true;
+
+    if (rules.required) {
+      isValid &= value.trim() !== '';
+    }
+
+    if (rules.minLength) {
+      isValid &= value.length >= rules.minLength;
+    }
+
+    if (rules.matchesRegEx) {
+      isValid &= value.match(rules.matchesRegEx) !== null;
+    }
+
+    return !!isValid;
   }
 
   orderHandler = (ev) => {
@@ -64,6 +110,7 @@ class ContactData extends Component {
     const updatedFormElement = {...this.state.orderForm[inputIdentifier]};
 
     updatedFormElement.value = ev.target.value;
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedOrderForm[inputIdentifier] = updatedFormElement;
 
     this.setState({orderForm: updatedOrderForm});
@@ -85,7 +132,8 @@ class ContactData extends Component {
           {formElementsArray.map(formElement => (
               <Input key={formElement.id} elementType={formElement.config.elementType}
                      elementConfig={formElement.config.elementConfig} value={formElement.config.value}
-                     changed={(ev) => this.inputChangedHandler(ev, formElement.id)}/>
+                     changed={(ev) => this.inputChangedHandler(ev, formElement.id)} invalid={!formElement.config.valid}
+                     shouldValidate={!!formElement.config.validation}/>
           ))}
           <Button btnType="Success">ORDER</Button>
         </form>
