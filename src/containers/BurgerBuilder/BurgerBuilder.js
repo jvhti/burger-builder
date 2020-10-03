@@ -9,16 +9,8 @@ import Loader from "../../hoc/Loader/Loader";
 import {connect} from "react-redux";
 import * as actionTypes from '../../store/actions';
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  cheese: 0.4,
-  meat: 1.3,
-  bacon: 1.7
-};
-
 class BurgerBuilder extends Component {
   state = {
-    totalPrice: 4,
     purchasable: false,
     purchasing: false,
     loading: false,
@@ -37,36 +29,6 @@ class BurgerBuilder extends Component {
     //     .catch(() => {
     //       this.setState({error: true});
     //     });
-  }
-
-  addIngredientHandler = (type) => {
-    this.setState((prevState) => {
-      const ingredients = {...prevState.ingredients};
-
-      ++ingredients[type];
-
-      return {
-        ingredients,
-        totalPrice: prevState.totalPrice + INGREDIENT_PRICES[type],
-        purchasable: BurgerBuilder.isPurchasable(ingredients)
-      };
-    });
-  }
-
-  removeIngredientHandler = (type) => {
-    this.setState((prevState) => {
-      if (prevState.ingredients[type] <= 0) return;
-
-      const ingredients = {...prevState.ingredients};
-
-      --ingredients[type];
-
-      return {
-        ingredients,
-        totalPrice: prevState.totalPrice - INGREDIENT_PRICES[type],
-        purchasable: BurgerBuilder.isPurchasable(ingredients)
-      };
-    });
   }
 
   purchaseHandler = () => {
@@ -108,14 +70,14 @@ class BurgerBuilder extends Component {
                     <OrderSummary ingredients={this.props.ings}
                                   purchaseCancelled={this.purchaseCancelHandler}
                                   purchaseContinued={this.purchaseContinueHandler}
-                                  price={this.state.totalPrice}/>
+                                  price={this.props.price}/>
                   </Loader>
                 </Modal>
                 <Burger ingredients={this.props.ings}/>
                 <BuildControls ingredientAdded={this.props.onIngredientAdded}
                                ingredientRemoved={this.props.onIngredientRemoved}
                                disabled={disabledInfo}
-                               price={this.state.totalPrice}
+                               price={this.props.price}
                                purchasable={this.state.purchasable}
                                order={this.purchaseHandler}/>
               </Loader>
@@ -125,7 +87,10 @@ class BurgerBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => ({ings: state.ingredients});
+const mapStateToProps = state => ({
+  ings: state.ingredients,
+  price: state.totalPrice
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
