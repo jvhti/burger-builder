@@ -11,7 +11,6 @@ import * as actionTypes from '../../store/actions';
 
 class BurgerBuilder extends Component {
   state = {
-    purchasable: false,
     purchasing: false,
     loading: false,
     error: false
@@ -78,7 +77,7 @@ class BurgerBuilder extends Component {
                                ingredientRemoved={this.props.onIngredientRemoved}
                                disabled={disabledInfo}
                                price={this.props.price}
-                               purchasable={this.state.purchasable}
+                               purchasable={BurgerBuilder.isPurchasable(this.props.ings)}
                                order={this.purchaseHandler}/>
               </Loader>
               : <p style={{textAlign: 'center'}}>Ingredients can't be loaded!</p>}
