@@ -10,12 +10,10 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.PURCHASE_BURGER_START:
-      return updateObject(state, {loading: true});
     case actionTypes.FETCH_ORDERS_START:
       return updateObject(state, {loading: true});
 
     case actionTypes.PURCHASE_BURGER_FAIL:
-      return updateObject(state, {loading: false});
     case actionTypes.FETCH_ORDERS_FAIL:
       return updateObject(state, {loading: false});
 
