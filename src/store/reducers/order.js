@@ -7,22 +7,36 @@ const initialState = {
   purchased: false
 };
 
+const setLoading = (state, isLoading) => updateObject(state, {loading: isLoading});
+
+const startLoading = (state) => {
+  return setLoading(state, true);
+};
+
+const stopLoading = (state) => {
+  return setLoading(state, false);
+};
+
+const purchaseBurgerSuccess = (state, action) => {
+  return updateObject(state, {
+    loading: false,
+    purchased: true,
+    orders: state.orders.concat({...action.orderData, id: action.orderId})
+  });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.PURCHASE_BURGER_START:
     case actionTypes.FETCH_ORDERS_START:
-      return updateObject(state, {loading: true});
+      return startLoading(state);
 
     case actionTypes.PURCHASE_BURGER_FAIL:
     case actionTypes.FETCH_ORDERS_FAIL:
-      return updateObject(state, {loading: false});
+      return stopLoading(state);
 
     case actionTypes.PURCHASE_BURGER_SUCCESS:
-      return updateObject(state, {
-        loading: false,
-        purchased: true,
-        orders: state.orders.concat({...action.orderData, id: action.orderId})
-      });
+      return purchaseBurgerSuccess(state, action);
 
     case actionTypes.PURCHASE_INIT:
       return updateObject(state, {purchased: false});
