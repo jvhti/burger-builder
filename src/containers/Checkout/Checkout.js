@@ -14,7 +14,9 @@ class Checkout extends Component {
   }
 
   render() {
-    if (this.props.ings)
+    if (!this.props.ings || this.props.purchased)
+      return <Redirect to="/"/>;
+    else
       return (
           <div>
             <CheckoutSummary ingredients={this.props.ings}
@@ -23,14 +25,13 @@ class Checkout extends Component {
             <Route path={this.props.match.path + '/contact-data'} component={ContactData}/>
           </div>
       );
-    else
-      return <Redirect to="/"/>;
   }
 }
 
 const mapStateToProps = state => ({
-  ings: state.ingredients,
-  price: state.totalPrice
+  ings: state.burgerBuilder.ingredients,
+  price: state.burgerBuilder.totalPrice,
+  purchased: state.order.purchased
 });
 
 export default connect(mapStateToProps)(Checkout);
