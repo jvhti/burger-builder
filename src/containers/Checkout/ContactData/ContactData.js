@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from '../../../store/actions/index';
 
+// TODO: Extract form functions (currently this is a copy of the same function in Auth Component)
 class ContactData extends Component {
   state = {
     orderForm: {
