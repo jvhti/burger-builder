@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import classes from './Auth.module.scss';
+import * as actions from '../../store/actions/index';
+import {connect} from 'react-redux';
 
 // TODO: Extract form functions (currently this is a copy of the same function in ContactData Component)
 class Auth extends Component {
@@ -24,8 +26,9 @@ class Auth extends Component {
         touched: false
       }
     },
-    formIsValid: false
-  }
+    formIsValid: false,
+    isSignUp: true
+  };
 
   checkValidity(value, rules) {
     let isValid = true;
@@ -45,7 +48,7 @@ class Auth extends Component {
     }
 
     return !!isValid;
-  }
+  };
 
   inputChangedHandler = (ev, inputIdentifier) => {
     const updatedForm = {...this.state.controls};
@@ -62,7 +65,17 @@ class Auth extends Component {
       formIsValid &= typeof updatedForm[inputIdentifier].valid === "undefined" || updatedForm[inputIdentifier].valid;
 
     this.setState({controls: updatedForm, formIsValid: !!formIsValid});
-  }
+  };
+
+  submitHandler = (ev) => {
+    ev.preventDefault();
+
+    this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
+  };
+
+  switchAuthModeHandler = () => {
+    this.setState(prevState => ({isSignUp: !prevState.isSignUp}));
+  };
 
   render() {
     const formElementsArray = [];
@@ -76,7 +89,7 @@ class Auth extends Component {
 
     return (
         <div className={classes.Auth}>
-          <form>
+          <form onSubmit={this.submitHandler}>
             {formElementsArray.map(formElement => (
                 <Input key={formElement.id} elementType={formElement.config.elementType}
                        elementConfig={formElement.config.elementConfig} value={formElement.config.value}
@@ -84,11 +97,18 @@ class Auth extends Component {
                        invalid={!formElement.config.valid}
                        shouldValidate={!!formElement.config.validation} touched={formElement.config.touched}/>
             ))}
-            <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
+            <Button btnType="Success"
+                    disabled={!this.state.formIsValid}>{!this.state.isSignUp ? "SIGN IN" : "SIGN UP"}</Button>
           </form>
+          <Button btnType="Danger" clicked={this.switchAuthModeHandler}>SWITCH
+            TO {this.state.isSignUp ? "SIGN IN" : "SIGN UP"}</Button>
         </div>
     );
   }
 }
 
-export default Auth;
+const mapDispatchToProps = dispatch => ({
+  onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
+});
+
+export default connect(null, mapDispatchToProps)(Auth);
