@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const authStart = () => ({type: AUTH_START});
 
-export const authSuccess = (authData) => ({type: AUTH_SUCCESS, authData});
+export const authSuccess = (idToken, userId) => ({type: AUTH_SUCCESS, idToken, userId});
 
 export const authFail = (error) => ({type: AUTH_FAIL, error});
 
@@ -25,7 +25,7 @@ export const auth = (email, password, isSignUp) => {
     axios.post(url + process.env.REACT_APP_FIREBASE_API_KEY, authData)
         .then(response => {
           console.log(response.data);
-          dispatch(authSuccess(response.data));
+          dispatch(authSuccess(response.data.idToken, response.data.localId));
         })
         .catch(err => {
           console.error(err);
