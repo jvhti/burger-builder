@@ -24,11 +24,9 @@ export const auth = (email, password, isSignUp) => {
 
     axios.post(url + process.env.REACT_APP_FIREBASE_API_KEY, authData)
         .then(response => {
-          console.log(response.data);
           dispatch(authSuccess(response.data.idToken, response.data.localId));
         })
         .catch(err => {
-          console.error(err);
           dispatch(authFail(err));
         });
   }
