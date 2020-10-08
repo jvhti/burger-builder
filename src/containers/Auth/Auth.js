@@ -4,6 +4,7 @@ import Button from "../../components/UI/Button/Button";
 import classes from './Auth.module.scss';
 import * as actions from '../../store/actions/index';
 import {connect} from 'react-redux';
+import Loader from "../../hoc/Loader/Loader";
 
 // TODO: Extract form functions (currently this is a copy of the same function in ContactData Component)
 class Auth extends Component {
@@ -87,16 +88,24 @@ class Auth extends Component {
       });
     }
 
+    let errorMessage = null;
+    if (this.props.error) {
+      errorMessage = (<p>{this.props.error.message}</p>);
+    }
+
     return (
         <div className={classes.Auth}>
           <form onSubmit={this.submitHandler}>
-            {formElementsArray.map(formElement => (
-                <Input key={formElement.id} elementType={formElement.config.elementType}
-                       elementConfig={formElement.config.elementConfig} value={formElement.config.value}
-                       changed={(ev) => this.inputChangedHandler(ev, formElement.id)}
-                       invalid={!formElement.config.valid}
-                       shouldValidate={!!formElement.config.validation} touched={formElement.config.touched}/>
-            ))}
+            {errorMessage}
+            <Loader loading={this.props.loading}>
+              {formElementsArray.map(formElement => (
+                  <Input key={formElement.id} elementType={formElement.config.elementType}
+                         elementConfig={formElement.config.elementConfig} value={formElement.config.value}
+                         changed={(ev) => this.inputChangedHandler(ev, formElement.id)}
+                         invalid={!formElement.config.valid}
+                         shouldValidate={!!formElement.config.validation} touched={formElement.config.touched}/>
+              ))}
+            </Loader>
             <Button btnType="Success"
                     disabled={!this.state.formIsValid}>{!this.state.isSignUp ? "SIGN IN" : "SIGN UP"}</Button>
           </form>
@@ -107,8 +116,13 @@ class Auth extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+  error: state.auth.error
+});
+
 const mapDispatchToProps = dispatch => ({
   onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
 });
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
