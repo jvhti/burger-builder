@@ -8,9 +8,8 @@ import Input from "../../../components/UI/Input/Input";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from '../../../store/actions/index';
-import {checkValidity, updateObject} from "../../../shared/utility";
+import {inputChangedHandlerFactory} from "../../../shared/utility";
 
-// TODO: Extract form functions (currently this is a copy of the same function in Auth Component)
 class ContactData extends Component {
   state = {
     orderForm: {
@@ -87,23 +86,7 @@ class ContactData extends Component {
     this.props.onOrderBurger(order, this.props.token);
   }
 
-  inputChangedHandler = (ev, inputIdentifier) => {
-    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
-      value: ev.target.value,
-      touched: true,
-      valid: checkValidity(ev.target.value, this.state.orderForm[inputIdentifier].validation)
-    });
-
-    const updatedOrderForm = updateObject(this.state.orderForm, {
-      [inputIdentifier]: updatedFormElement
-    });
-
-    let formIsValid = true;
-    for (const inputIdentifier in updatedOrderForm)
-      formIsValid &= typeof updatedOrderForm[inputIdentifier].valid === "undefined" || updatedOrderForm[inputIdentifier].valid;
-
-    this.setState({orderForm: updatedOrderForm, formIsValid: !!formIsValid});
-  }
+  inputChangedHandler = inputChangedHandlerFactory(this, 'orderForm');
 
   render() {
     const formElementsArray = [];
