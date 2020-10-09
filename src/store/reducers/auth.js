@@ -1,5 +1,5 @@
 import {AUTH_FAIL, AUTH_LOGOUT, AUTH_START, AUTH_SUCCESS, SET_AUTH_REDIRECT_PATH} from '../actions/actionTypes';
-import {updateObject} from "../utility";
+import {updateObject} from "../../shared/utility";
 
 const initialState = {
   token: null,
