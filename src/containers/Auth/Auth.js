@@ -5,6 +5,7 @@ import classes from './Auth.module.scss';
 import * as actions from '../../store/actions/index';
 import {connect} from 'react-redux';
 import Loader from "../../hoc/Loader/Loader";
+import {Redirect} from "react-router-dom";
 
 // TODO: Extract form functions (currently this is a copy of the same function in ContactData Component)
 class Auth extends Component {
@@ -93,6 +94,9 @@ class Auth extends Component {
       errorMessage = (<p>{this.props.error.message}</p>);
     }
 
+    if (this.props.isAuthenticated)
+      return <Redirect to="/"/>;
+
     return (
         <div className={classes.Auth}>
           <form onSubmit={this.submitHandler}>
@@ -118,7 +122,8 @@ class Auth extends Component {
 
 const mapStateToProps = state => ({
   loading: state.auth.loading,
-  error: state.auth.error
+  error: state.auth.error,
+  isAuthenticated: state.auth.token !== null
 });
 
 const mapDispatchToProps = dispatch => ({
