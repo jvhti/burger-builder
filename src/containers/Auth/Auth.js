@@ -6,7 +6,7 @@ import * as actions from '../../store/actions/index';
 import {connect} from 'react-redux';
 import Loader from "../../hoc/Loader/Loader";
 import {Redirect} from "react-router-dom";
-import {updateObject} from "../../shared/utility";
+import {checkValidity, updateObject} from "../../shared/utility";
 
 // TODO: Extract form functions (currently this is a copy of the same function in ContactData Component)
 class Auth extends Component {
@@ -38,31 +38,11 @@ class Auth extends Component {
       this.props.onSetAuthRedirectPath();
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (!rules) return true;
-
-    if (rules.required) {
-      isValid &= value.trim() !== '';
-    }
-
-    if (rules.minLength) {
-      isValid &= value.length >= rules.minLength;
-    }
-
-    if (rules.matchesRegEx) {
-      isValid &= value.match(rules.matchesRegEx) !== null;
-    }
-
-    return !!isValid;
-  };
-
   inputChangedHandler = (ev, inputIdentifier) => {
     const updatedFormElement = updateObject(this.state.controls[inputIdentifier], {
       value: ev.target.value,
       touched: true,
-      valid: this.checkValidity(ev.target.value, this.state.controls[inputIdentifier].validation)
+      valid: checkValidity(ev.target.value, this.state.controls[inputIdentifier].validation)
     });
 
     const updatedOrderForm = updateObject(this.state.controls, {

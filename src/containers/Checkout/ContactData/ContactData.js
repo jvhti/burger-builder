@@ -8,7 +8,7 @@ import Input from "../../../components/UI/Input/Input";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from '../../../store/actions/index';
-import {updateObject} from "../../../shared/utility";
+import {checkValidity, updateObject} from "../../../shared/utility";
 
 // TODO: Extract form functions (currently this is a copy of the same function in Auth Component)
 class ContactData extends Component {
@@ -69,26 +69,6 @@ class ContactData extends Component {
     formIsValid: false
   }
 
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    if (!rules) return true;
-
-    if (rules.required) {
-      isValid &= value.trim() !== '';
-    }
-
-    if (rules.minLength) {
-      isValid &= value.length >= rules.minLength;
-    }
-
-    if (rules.matchesRegEx) {
-      isValid &= value.match(rules.matchesRegEx) !== null;
-    }
-
-    return !!isValid;
-  }
-
   orderHandler = (ev) => {
     ev.preventDefault();
 
@@ -111,7 +91,7 @@ class ContactData extends Component {
     const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
       value: ev.target.value,
       touched: true,
-      valid: this.checkValidity(ev.target.value, this.state.orderForm[inputIdentifier].validation)
+      valid: checkValidity(ev.target.value, this.state.orderForm[inputIdentifier].validation)
     });
 
     const updatedOrderForm = updateObject(this.state.orderForm, {
