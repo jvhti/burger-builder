@@ -8,6 +8,7 @@ import Input from "../../../components/UI/Input/Input";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from '../../../store/actions/index';
+import {updateObject} from "../../../shared/utility";
 
 // TODO: Extract form functions (currently this is a copy of the same function in Auth Component)
 class ContactData extends Component {
@@ -107,14 +108,15 @@ class ContactData extends Component {
   }
 
   inputChangedHandler = (ev, inputIdentifier) => {
-    const updatedOrderForm = {...this.state.orderForm};
+    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+      value: ev.target.value,
+      touched: true,
+      valid: this.checkValidity(ev.target.value, this.state.orderForm[inputIdentifier].validation)
+    });
 
-    const updatedFormElement = {...this.state.orderForm[inputIdentifier]};
-
-    updatedFormElement.value = ev.target.value;
-    updatedFormElement.touched = true;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement
+    });
 
     let formIsValid = true;
     for (const inputIdentifier in updatedOrderForm)

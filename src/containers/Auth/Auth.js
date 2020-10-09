@@ -6,6 +6,7 @@ import * as actions from '../../store/actions/index';
 import {connect} from 'react-redux';
 import Loader from "../../hoc/Loader/Loader";
 import {Redirect} from "react-router-dom";
+import {updateObject} from "../../shared/utility";
 
 // TODO: Extract form functions (currently this is a copy of the same function in ContactData Component)
 class Auth extends Component {
@@ -58,21 +59,22 @@ class Auth extends Component {
   };
 
   inputChangedHandler = (ev, inputIdentifier) => {
-    const updatedForm = {...this.state.controls};
+    const updatedFormElement = updateObject(this.state.controls[inputIdentifier], {
+      value: ev.target.value,
+      touched: true,
+      valid: this.checkValidity(ev.target.value, this.state.controls[inputIdentifier].validation)
+    });
 
-    const updatedFormElement = {...this.state.controls[inputIdentifier]};
-
-    updatedFormElement.value = ev.target.value;
-    updatedFormElement.touched = true;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-    updatedForm[inputIdentifier] = updatedFormElement;
+    const updatedOrderForm = updateObject(this.state.controls, {
+      [inputIdentifier]: updatedFormElement
+    });
 
     let formIsValid = true;
-    for (const inputIdentifier in updatedForm)
-      formIsValid &= typeof updatedForm[inputIdentifier].valid === "undefined" || updatedForm[inputIdentifier].valid;
+    for (const inputIdentifier in updatedOrderForm)
+      formIsValid &= typeof updatedOrderForm[inputIdentifier].valid === "undefined" || updatedOrderForm[inputIdentifier].valid;
 
-    this.setState({controls: updatedForm, formIsValid: !!formIsValid});
-  };
+    this.setState({controls: updatedOrderForm, formIsValid: !!formIsValid});
+  }
 
   submitHandler = (ev) => {
     ev.preventDefault();
