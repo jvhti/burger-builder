@@ -1,4 +1,4 @@
-import {AUTH_FAIL, AUTH_LOGOUT, AUTH_START, AUTH_SUCCESS, SET_AUTH_REDIRECT_PATH} from "./actionTypes";
+import {AUTH_FAIL, AUTH_INITIATE_LOGOUT, AUTH_START, AUTH_SUCCESS, SET_AUTH_REDIRECT_PATH} from "./actionTypes";
 import axios from 'axios';
 
 export const authStart = () => ({type: AUTH_START});
@@ -8,10 +8,7 @@ export const authSuccess = (idToken, userId) => ({type: AUTH_SUCCESS, idToken, u
 export const authFail = (error) => ({type: AUTH_FAIL, error});
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expirationDate');
-
-  return {type: AUTH_LOGOUT}
+  return {type: AUTH_INITIATE_LOGOUT};
 };
 
 export const checkAuthTimeout = (expirationTime) => {
