@@ -1,4 +1,5 @@
 import {
+  AUTH_CHECK_TIMEOUT,
   AUTH_FAIL,
   AUTH_INITIATE_LOGOUT,
   AUTH_LOGOUT,
@@ -18,13 +19,7 @@ export const logout = () => ({type: AUTH_INITIATE_LOGOUT});
 
 export const logoutSucceed = () => ({type: AUTH_LOGOUT});
 
-export const checkAuthTimeout = (expirationTime) => {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(logout());
-    }, expirationTime * 1000);
-  };
-}
+export const checkAuthTimeout = (expirationTime) => ({type: AUTH_CHECK_TIMEOUT, expirationTime});
 
 export const auth = (email, password, isSignUp) => {
   return dispatch => {
