@@ -6,11 +6,12 @@ import {
   AUTH_CHECK_TIMEOUT,
   AUTH_INITIATE_LOGOUT,
   AUTH_USER,
+  FETCH_ORDERS,
   INIT_INGREDIENTS,
   PURCHASE_BURGER
 } from "../actions/actionTypes";
 import {initIngredientsSaga} from "./burgerBuilder";
-import {purchaseBurgerSaga} from "./order";
+import {fetchOrdersSaga, purchaseBurgerSaga} from "./order";
 
 export function* watchAuth() {
   yield takeEvery(AUTH_INITIATE_LOGOUT, logoutSaga);
@@ -25,4 +26,5 @@ export function* watchBurgerBuilder() {
 
 export function* watchOrder() {
   yield takeEvery(PURCHASE_BURGER, purchaseBurgerSaga);
+  yield takeEvery(FETCH_ORDERS, fetchOrdersSaga);
 }
