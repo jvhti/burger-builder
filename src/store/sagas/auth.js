@@ -41,3 +41,23 @@ export function* authUserSaga(action) {
     yield put(authFail(err.response.data.error));
   }
 }
+
+export function* authCheckStateSaga() {
+  const token = yield localStorage.getItem('token');
+
+  if (!token) return yield put(logout());
+
+  const expirationDate = yield new Date(localStorage.getItem('expirationDate'));
+
+  if (expirationDate > (yield new Date())) {
+    try {
+      const response = yield axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + process.env.REACT_APP_FIREBASE_API_KEY, {idToken: token});
+      yield put(authSuccess(token, response.data.users[0].localId));
+      yield put(checkAuthTimeout((expirationDate.getTime() - (yield new Date()).getTime()) / 1000));
+    } catch {
+      yield put(logout());
+    }
+  } else {
+    yield put(logout());
+  }
+}
