@@ -1,10 +1,10 @@
-import {delay, put} from 'redux-saga/effects';
+import {call, delay, put} from 'redux-saga/effects';
 import {authFail, authStart, authSuccess, checkAuthTimeout, logout, logoutSucceed} from "../actions/auth";
 import axios from "axios";
 
 export function* logoutSaga() {
-  yield localStorage.removeItem('token');
-  yield localStorage.removeItem('expirationDate');
+  call([localStorage, 'removeItem'], 'token'); //You should use call when you want to test sagas, its easy to mock
+  call([localStorage, 'removeItem'], 'expirationDate');
 
   yield put(logoutSucceed());
 }
