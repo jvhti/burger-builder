@@ -8,7 +8,7 @@ import Input from "../../../components/UI/Input/Input";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from '../../../store/actions/index';
-import {inputChangedHandlerForFunctionalComponentFactory} from "../../../shared/utility";
+import {inputChangedHandlerFactory} from "../../../shared/utility";
 
 const ContactData = (props) => {
   const [orderForm, setOrderForm] = useState({
@@ -88,7 +88,7 @@ const ContactData = (props) => {
     onOrderBurger(order, token);
   }, [onOrderBurger, ings, price, orderForm, userId, token]);
 
-  const inputChangedHandler = inputChangedHandlerForFunctionalComponentFactory(orderForm, setOrderForm, setFormIsValid);
+  const inputChangedHandler = inputChangedHandlerFactory(orderForm, setOrderForm, setFormIsValid);
 
   const formElementsArray = [];
 
