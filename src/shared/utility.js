@@ -39,3 +39,24 @@ export const inputChangedHandlerFactory = (obj, statePropertyName) => {
     obj.setState({[statePropertyName]: updatedOrderForm, formIsValid: !!formIsValid});
   };
 }
+
+export const inputChangedHandlerForFunctionalComponentFactory = (formState, setFormState, setFormIsValid) => {
+  return (ev, inputIdentifier) => {
+    const updatedFormElement = updateObject(formState[inputIdentifier], {
+      value: ev.target.value,
+      touched: true,
+      valid: checkValidity(ev.target.value, formState[inputIdentifier].validation)
+    });
+
+    const updatedOrderForm = updateObject(formState, {
+      [inputIdentifier]: updatedFormElement
+    });
+
+    let formIsValid = true;
+    for (const identifier in updatedOrderForm)
+      formIsValid &= typeof updatedOrderForm[identifier].valid === "undefined" || updatedOrderForm[identifier].valid;
+
+    setFormState({...updatedOrderForm});
+    setFormIsValid(!!formIsValid);
+  };
+}
