@@ -20,22 +20,23 @@ export const checkValidity = (value, rules) => {
   return !!isValid;
 }
 
-export const inputChangedHandlerFactory = (obj, statePropertyName) => {
+export const inputChangedHandlerFactory = (formState, setFormState, setFormIsValid) => {
   return (ev, inputIdentifier) => {
-    const updatedFormElement = updateObject(obj.state[statePropertyName][inputIdentifier], {
+    const updatedFormElement = updateObject(formState[inputIdentifier], {
       value: ev.target.value,
       touched: true,
-      valid: checkValidity(ev.target.value, obj.state[statePropertyName][inputIdentifier].validation)
+      valid: checkValidity(ev.target.value, formState[inputIdentifier].validation)
     });
 
-    const updatedOrderForm = updateObject(obj.state[statePropertyName], {
+    const updatedOrderForm = updateObject(formState, {
       [inputIdentifier]: updatedFormElement
     });
 
     let formIsValid = true;
-    for (const inputIdentifier in updatedOrderForm)
-      formIsValid &= typeof updatedOrderForm[inputIdentifier].valid === "undefined" || updatedOrderForm[inputIdentifier].valid;
+    for (const identifier in updatedOrderForm)
+      formIsValid &= typeof updatedOrderForm[identifier].valid === "undefined" || updatedOrderForm[identifier].valid;
 
-    obj.setState({[statePropertyName]: updatedOrderForm, formIsValid: !!formIsValid});
+    setFormState({...updatedOrderForm});
+    setFormIsValid(!!formIsValid);
   };
 }
