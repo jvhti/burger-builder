@@ -31,10 +31,12 @@ const Auth = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
 
+  const {isBuildingBurger, authRedirectPath, onSetAuthRedirectPath} = props;
+
   useEffect(() => {
-    if (!props.isBuildingBurger && props.authRedirectPath !== '/')
-      props.onSetAuthRedirectPath();
-  }, []);
+    if (!isBuildingBurger && authRedirectPath !== '/')
+      onSetAuthRedirectPath();
+  }, [isBuildingBurger, authRedirectPath, onSetAuthRedirectPath]);
 
   const inputChangedHandler = inputChangedHandlerFactory(controls, setControls, setFormIsValid);
 
